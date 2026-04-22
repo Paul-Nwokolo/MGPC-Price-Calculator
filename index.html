@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MTN Cloud Pricing Calculator</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; width: 100%; overflow: hidden; }
+    iframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+      display: block;
+    }
+    /* Loading state while iframe loads */
+    #loader {
+      position: fixed; inset: 0;
+      background: #f9c600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      z-index: 10;
+      transition: opacity 0.4s;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loader">MTN CLOUD — LOADING...</div>
+
+  <iframe
+    id="app"
+    src="YOUR_DEPLOYMENT_URL"
+    title="MTN Cloud Pricing Calculator"
+    allowfullscreen
+    loading="eager"
+  ></iframe>
+
+  <script>
+    const iframe = document.getElementById('app');
+    const loader = document.getElementById('loader');
+    iframe.addEventListener('load', () => {
+      loader.style.opacity = '0';
+      setTimeout(() => loader.remove(), 400);
+    });
+  </script>
+
+</body>
+</html>
