@@ -13,24 +13,121 @@
       border: none;
       display: block;
     }
-    /* Loading state while iframe loads */
+
     #loader {
       position: fixed; inset: 0;
-      background: #f9c600;
+      background: #0a0a0a;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-family: sans-serif;
-      font-weight: 800;
-      font-size: 1.2rem;
+      gap: 40px;
       z-index: 10;
-      transition: opacity 0.4s;
+      transition: opacity 0.6s;
+    }
+
+    /* ── Cloud ── */
+    .cloud-wrap {
+      position: relative;
+      width: 100px;
+      height: 60px;
+      animation: drift 2.4s ease-in-out infinite alternate;
+    }
+    .cloud-body {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100px; height: 40px;
+      background: #f9c600;
+      border-radius: 40px;
+    }
+    .cloud-body::before {
+      content: '';
+      position: absolute;
+      width: 50px; height: 50px;
+      background: #f9c600;
+      border-radius: 50%;
+      top: -24px; left: 12px;
+    }
+    .cloud-body::after {
+      content: '';
+      position: absolute;
+      width: 32px; height: 32px;
+      background: #f9c600;
+      border-radius: 50%;
+      top: -14px; left: 48px;
+    }
+
+    /* Rain drops */
+    .rain {
+      position: absolute;
+      bottom: -18px;
+      display: flex;
+      gap: 10px;
+      left: 22px;
+    }
+    .drop {
+      width: 3px; height: 10px;
+      background: #f9c600;
+      border-radius: 2px;
+      opacity: 0;
+      animation: fall 1.2s ease-in infinite;
+    }
+    .drop:nth-child(1) { animation-delay: 0s; }
+    .drop:nth-child(2) { animation-delay: 0.2s; }
+    .drop:nth-child(3) { animation-delay: 0.4s; }
+    .drop:nth-child(4) { animation-delay: 0.15s; }
+    .drop:nth-child(5) { animation-delay: 0.35s; }
+
+    @keyframes drift {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-12px); }
+    }
+    @keyframes fall {
+      0%   { opacity: 0; transform: translateY(0); }
+      30%  { opacity: 1; }
+      100% { opacity: 0; transform: translateY(14px); }
+    }
+
+    /* ── Dots loader bar ── */
+    .dots {
+      display: flex;
+      gap: 8px;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      background: #f9c600;
+      border-radius: 50%;
+      animation: bounce 1.2s ease-in-out infinite;
+    }
+    .dot:nth-child(1) { animation-delay: 0s; }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50%       { opacity: 1;   transform: scale(1.2); }
     }
   </style>
 </head>
 <body>
 
-  <div id="loader">MTN CLOUD — LOADING...</div>
+  <div id="loader">
+    <div class="cloud-wrap">
+      <div class="cloud-body"></div>
+      <div class="rain">
+        <div class="drop"></div>
+        <div class="drop"></div>
+        <div class="drop"></div>
+        <div class="drop"></div>
+        <div class="drop"></div>
+      </div>
+    </div>
+    <div class="dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
 
   <iframe
     id="app"
@@ -45,7 +142,7 @@
     const loader = document.getElementById('loader');
     iframe.addEventListener('load', () => {
       loader.style.opacity = '0';
-      setTimeout(() => loader.remove(), 400);
+      setTimeout(() => loader.remove(), 600);
     });
   </script>
 
