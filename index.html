@@ -4,11 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>MTN Cloud Pricing Calculator</title>
+
+  <!--
+    PERFORMANCE: Start TCP/TLS handshakes to the heaviest downstream origins
+    in parallel with this page's render. By the time the iframe actually
+    requests script.google.com, the connection is already warm — saving
+    ~100–300ms on cold loads. Adding the cdnjs origin so xlsx (when
+    lazy-loaded after user clicks Export) also benefits.
+  -->
+  <link rel="preconnect" href="https://script.google.com" crossorigin>
+  <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+  <link rel="preconnect" href="https://mtn-bucket-morph-test.s3.us-east-1.amazonaws.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="dns-prefetch" href="https://script.google.com">
+  <link rel="dns-prefetch" href="https://script.googleusercontent.com">
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { 
-      height: 100%; 
-      width: 100%; 
+    html, body {
+      height: 100%;
+      width: 100%;
       overflow: hidden; /* Prevents body scroll, allowing wrapper to scroll */
       background: #0a0a0a;
     }
