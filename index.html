@@ -137,6 +137,42 @@
       0%, 100% { opacity: 0.2; transform: scale(0.8); }
       50%        { opacity: 1;   transform: scale(1.2); }
     }
+
+    /* ── LOAD ERROR FALLBACK ──
+       Shown only if the app fails to load within the timeout window, so a
+       visitor is never stranded on an infinite loader. Uses the same palette
+       as the loader to stay on-brand. */
+    #load-error {
+      position: fixed; inset: 0;
+      background: #0a0a0a;
+      display: none;            /* JS switches this to flex on timeout */
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 24px;
+      text-align: center;
+      z-index: 11;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    #load-error .err-icon { font-size: 2.4rem; }
+    #load-error .err-title {
+      color: #f9c600; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; font-size: 1.05rem;
+    }
+    #load-error .err-msg { color: #aaa; font-size: 0.9rem; line-height: 1.6; max-width: 360px; }
+    #load-error .err-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    #load-error a, #load-error button {
+      background: #f9c600; color: #000; border: none; cursor: pointer;
+      padding: 12px 26px; border-radius: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;
+      text-decoration: none; transition: background 0.2s;
+    }
+    #load-error a.secondary, #load-error button.secondary {
+      background: transparent; color: #fff; border: 1px solid #333;
+    }
+    #load-error a:hover, #load-error button:hover { background: #d4a800; }
+    #load-error a.secondary:hover, #load-error button.secondary:hover { background: #161616; }
   </style>
 </head>
 <body>
@@ -159,6 +195,16 @@
     </div>
   </div>
 
+  <div id="load-error">
+    <div class="err-icon">☁️</div>
+    <div class="err-title">Couldn't load the calculator</div>
+    <div class="err-msg">The pricing app is taking longer than expected to respond. Check your connection and try again, or open it directly.</div>
+    <div class="err-actions">
+      <button onclick="location.reload()">Reload</button>
+      <a class="secondary" href="https://script.google.com/macros/s/AKfycbyUd2zrI5kz8ybwOM2afc3bHjSkrIF1X-2Wlltznpg9Gvi8uMBBiaOeKaMPtEGY878/exec" target="_blank" rel="noopener">Open Directly</a>
+    </div>
+  </div>
+
   <div class="iframe-wrapper">
     <iframe
       id="app"
@@ -171,11 +217,27 @@
   </div>
 
   <script>
-    const iframe = document.getElementById('app');
-    const loader = document.getElementById('loader');
-    iframe.addEventListener('load', () => {
+    const iframe   = document.getElementById('app');
+    const loader   = document.getElementById('loader');
+    const errorBox = document.getElementById('load-error');
+
+    function hideLoader() {
       loader.style.opacity = '0';
-      setTimeout(() => loader.remove(), 600);
+      setTimeout(() => { if (loader.parentNode) loader.remove(); }, 600);
+    }
+
+    // RELIABILITY: previously the loader only ever hid on a successful iframe
+    // 'load' event, so a failed/slow/offline load left the animation spinning
+    // forever. This fallback stops it after 20s and offers a retry.
+    const failTimer = setTimeout(() => {
+      hideLoader();
+      errorBox.style.display = 'flex';
+    }, 20000);
+
+    iframe.addEventListener('load', () => {
+      clearTimeout(failTimer);   // app loaded fine — cancel the fallback
+      errorBox.style.display = 'none';
+      hideLoader();
     });
   </script>
 
